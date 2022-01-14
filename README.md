@@ -5,9 +5,24 @@ In order to get the entire project up and running, we made this summary to get y
 First you need to set up your hosting environment in the right way. We highly recommend you use linux. In the example we are using `Ubuntu 20.04.3 LTS`
 
 ### 1.1 Installing Everything
-Before starting the commands make sure your system is up to date with `sudo apt update`
-
+Before starting the commands make sure your system is up to date with 
+```shell
+sudo apt update
+```
 #### 1.1.1 Tomcat
+Tomcat is a webserver used for running Java Web Application Runtimes (WAR)  
+So before going further, make sure java is installed. Run this command to install: 
+```shell
+sudo apt install default-jdk
+```
+  1. Create a new tomcat user, since the server shouldn't run under the root user.
+```shell
+sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
+```
+  2. Download the latest version of tomcat from their website [Download Tomcat 9](https://tomcat.apache.org/download-90.cgi)
+```shell
+wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.27/bin/apache-tomcat-9.0.27.tar.gz -P /tmp
+```
 
 #### 1.1.2 MySQL
 
