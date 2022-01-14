@@ -15,32 +15,44 @@ So before going further, make sure java is installed. Run this command to instal
 ```shell
 sudo apt install default-jdk
 ```
-  1. Create a new tomcat user, since the server shouldn't run under the root user.
+Create a new tomcat user, since the server shouldn't run under the root user.
+
 ```shell
 sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
 ```
-  2. Download the latest version of tomcat from their website [Download Tomcat 9](https://tomcat.apache.org/download-90.cgi)  
-  With the following command you download the version that was used during development `Tomcat 9.0.56` to the temp folder.
+Download the latest version of tomcat from their website [Download Tomcat 9](https://tomcat.apache.org/download-90.cgi)  
+With the following command you download the version that was used during development `Tomcat 9.0.56` to the temp folder.
+
 ```shell
 wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.56/bin/apache-tomcat-9.0.56.tar.gz -P /tmp
 ```
-  Next up is to extract the downloaded file to the `/opt/tomcat` folder: 
+
+Next up is to extract the downloaded file to the `/opt/tomcat` folder: 
+
 ```shell
 sudo tar xf /tmp/apache-tomcat-9*.tar.gz -C /opt/tomcat
 ```
+
 In order to make upgrading in the future easy, create a symlink to the folder called `latest`:
+
 ```shell
 sudo ln -s /opt/tomcat/apache-tomcat-9.0.27 /opt/tomcat/latest
 ```
+
 Now we need to give the tomcat user ownership to this folder: 
+
 ```shell
 sudo chown -RH tomcat: /opt/tomcat/latest
 ```
+
 And then set the executable flag on all scripts within the `bin` folder. (Remember this step when you change versions)
+
 ```shell
 sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'
 ```
-  3. In order to run tomcat as a service, we need to create a `tomcat.service` file in the `/etc/systemd/system/` folder:"
+
+In order to run tomcat as a service, we need to create a `tomcat.service` file in the `/etc/systemd/system/` folder:
+
 ```shell
 sudo nano /etc/systemd/system/tomcat.service
 ```
@@ -73,7 +85,44 @@ ExecStop=/opt/tomcat/latest/bin/shutdown.sh
 
 [Install]
 WantedBy=multi-user.target
+```
 
+Next reload the deamon and start the service: 
+
+```shell
+sudo systemctl daemon-reload
+```
+```shell
+sudo systemctl start tomcat
+```
+
+Now check the status, if everything went correct it should show that tomcat is now running: 
+
+```shell
+sudo systemctl status tomcat
+```
+Output:  
+<img src="./images/tomcat-running.png">
+
+If the outputs look similar, run the following command to auto-start the tomcat service: 
+
+```shell
+sudo systemctl enable tomcat
+```
+
+Now for testing purposes you could allow access to the tomcat 8080 port for external usage. 
+However in this tutorial we will be using [Nginx Reverse Proxy](https://linuxize.com/post/nginx-reverse-proxy/) to publish all three of the projects.  
+To open the firewall for external access on port 8080 run the following command:  
+```shell
+sudo ufw allow 8080/tcp
+```
+<img src="./markups/danger-firewall.svg">
+
+Next thing we do is allow access to the tomcat management interface. This is usefull for deploying WAR files in an easy manner.  
+
+Open the `tomcat-user.xml` file: 
+```shell
+sudo nano /opt/tomcat/latest/conf/tomcat-users.xml
 ```
 
 #### 1.1.2 MySQL
@@ -96,12 +145,12 @@ Now run the latest database script found in the api repo (checking compatability
 The script can be found [here /vigmo.sql](https://github.com/NHL-S-Vigmo/Api/blob/master/vigmo.sql)
 
 #### 1.2.3 Granting the vigmo user permissions
-In step [1.2.1](#1.2.1) we created the vigmo user on the database.
+In step [1.2.1](#121-creating-the-database-user) we created the vigmo user on the database.
 
-With this command you can grant him all privileges on the database created in step [1.2.2](#1.2.2)
+With this command you can grant him all privileges on the database created in step [1.2.2](#122-creating-vigmo-database)
 
 ```sql
-GRANT ALL PRIVILEGES
+GRANT ALL PRIVILEGES ON vigmo.* TO 'vigmo'@'localhost';
 ```
 
 ### 1.3 
