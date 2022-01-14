@@ -19,9 +19,61 @@ sudo apt install default-jdk
 ```shell
 sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
 ```
-  2. Download the latest version of tomcat from their website [Download Tomcat 9](https://tomcat.apache.org/download-90.cgi)
+  2. Download the latest version of tomcat from their website [Download Tomcat 9](https://tomcat.apache.org/download-90.cgi)  
+  With the following command you download the version that was used during development `Tomcat 9.0.56` to the temp folder.
 ```shell
-wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.27/bin/apache-tomcat-9.0.27.tar.gz -P /tmp
+wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.56/bin/apache-tomcat-9.0.56.tar.gz -P /tmp
+```
+  Next up is to extract the downloaded file to the `/opt/tomcat` folder: 
+```shell
+sudo tar xf /tmp/apache-tomcat-9*.tar.gz -C /opt/tomcat
+```
+In order to make upgrading in the future easy, create a symlink to the folder called `latest`:
+```shell
+sudo ln -s /opt/tomcat/apache-tomcat-9.0.27 /opt/tomcat/latest
+```
+Now we need to give the tomcat user ownership to this folder: 
+```shell
+sudo chown -RH tomcat: /opt/tomcat/latest
+```
+And then set the executable flag on all scripts within the `bin` folder. (Remember this step when you change versions)
+```shell
+sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'
+```
+  3. In order to run tomcat as a service, we need to create a `tomcat.service` file in the `/etc/systemd/system/` folder:"
+```shell
+sudo nano /etc/systemd/system/tomcat.service
+```
+This should be a new file, if not, tread carefully, you might overwrite an existing configuration.  
+
+<img src="./markups/info-java-version.svg">
+
+In this new file enter the following configuration:
+```ini
+[Unit]
+Description=Tomcat 9 servlet container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/default-java"
+Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true"
+
+Environment="CATALINA_BASE=/opt/tomcat/latest"
+Environment="CATALINA_HOME=/opt/tomcat/latest"
+Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+ExecStart=/opt/tomcat/latest/bin/startup.sh
+ExecStop=/opt/tomcat/latest/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+
 ```
 
 #### 1.1.2 MySQL
