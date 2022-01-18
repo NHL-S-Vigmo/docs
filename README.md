@@ -36,7 +36,7 @@ sudo tar xf /tmp/apache-tomcat-9*.tar.gz -C /opt/tomcat
 In order to make upgrading in the future easy, create a symlink to the folder called `latest`:
 
 ```shell
-sudo ln -s /opt/tomcat/apache-tomcat-9.0.27 /opt/tomcat/latest
+sudo ln -s /opt/tomcat/apache-tomcat-9.0.56 /opt/tomcat/latest
 ```
 
 Now we need to give the tomcat user ownership to this folder: 
