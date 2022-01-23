@@ -153,6 +153,10 @@ Open up the mysql command prompt and sign in to begin this configuration step:
 `sudo mysql -u root` As the root user this should sign you in directly.
 
 #### 1.2.1 Creating the database user.
+Once you accessed the mysql terminal, you will have to create a database user by entering the following command and changing the `password`:
+```sql
+CREATE USER 'vigmo'@'localhost' IDENTIFIED BY 'password';
+```
 
 #### 1.2.2 Creating vigmo database
 
