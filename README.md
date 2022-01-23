@@ -126,8 +126,25 @@ sudo nano /opt/tomcat/latest/conf/tomcat-users.xml
 ```
 
 #### 1.1.2 MySQL
+Install mysql my running the following command: `sudo apt install mysql-server`.
+
+After installing mysql, you have to configure mysql. This can be done by running `sudo mysql_secure_installation`.
+This will take you through a series of prompts where you can make some changes to your MySQL installation’s security options. The first prompt will ask whether you’d like to set up the Validate Password Plugin, which can be used to test the password strength of new MySQL users before deeming them valid.
+
+If you elect to set up the Validate Password Plugin, any MySQL user you create that authenticates with a password will be required to have a password that satisfies the policy you select. The strongest policy level — which you can select by entering 2 — will require passwords to be at least eight characters long and include a mix of uppercase, lowercase, numeric, and special characters.
+
+Regardless of whether you choose to set up the Validate Password Plugin, the next prompt will be to set a password for the MySQL root user. Enter and then confirm a secure password of your choice.
+
+Note that even though you’ve set a password for the root MySQL user, this user is not currently configured to authenticate with a password when connecting to the MySQL shell.
+
+If you used the Validate Password Plugin, you’ll receive feedback on the strength of your new password. Then the script will ask if you want to continue with the password you just entered or if you want to enter a new one. Assuming you’re satisfied with the strength of the password you just entered, enter Y to continue the script.
+
+From there, you can press Y and then ENTER to accept the defaults for all the subsequent questions. This will remove some anonymous users and the test database, disable remote root logins, and load these new rules so that MySQL immediately respects the changes you have made.
+
+Once the script completes, your MySQL installation will be secured.
 
 #### 1.1.3 NodeJS
+Make sure you have installed the latest LTS version of nodejs. You can do this by downloading and installing this via this installation link. Check if the installation was successful by typing `node -v` into a console.
 
 #### 1.1.4 Ngnix
 
